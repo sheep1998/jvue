@@ -7,4 +7,11 @@ export default{
     name: 'MYSHAPELY纤美服饰',
     avatar: ''
   },
+  menuitem:{},
+  menuitems:[
+    {
+      id:0,
+      name:"展示内容"
+    }
+  ]
 }
