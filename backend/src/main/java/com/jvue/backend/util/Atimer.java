@@ -33,6 +33,10 @@ public class Atimer {
         return intervals;
     }
 
+    public int ran(int max,int min){
+        return (int)(Math.random()*(max-min)+min);
+    }
+
 
 
 

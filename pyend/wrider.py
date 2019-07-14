@@ -5,6 +5,7 @@ Created on Sat Jul 13 01:31:24 2019
 @author: 1535725170
 """
 import pandas as pd
+import numpy as np
 import csv
 from openpyxl import load_workbook
 from openpyxl import Workbook
@@ -120,4 +121,15 @@ class Translator:
     def s2up(self,s):
         return s.upper()
 
-
+    def np2df(self,np):
+        df = pd.DataFrame(np)
+        return df
+    
+    def df2np(self,df):
+        return df.values
+    
+    def np2lst(self,npp):
+        return npp.tolist()
+    
+    def lst2np(self,lst):
+        return np.array(lst)

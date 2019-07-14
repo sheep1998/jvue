@@ -7,25 +7,38 @@ import com.jvue.backend.util.BinaryTree.BinaryTree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 @Controller
 public class DemoController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(value="/demo")
-    @ResponseBody
-    public DemoDto demo() throws InterruptedException, IOException, ParseException {
-        //pyDemo();
+    @Autowired
+    private MyWebSocket myWebSocket;
 
-        return dtoDemo();
+    @PostMapping(value="/demo")
+    @ResponseBody
+    public String demo(String inputContent,String files) throws InterruptedException, IOException, ParseException {
+        myWebSocket.sendOneMessage(1,inputContent+"@"+files);
+
+        return "123";
     }
+
+    @GetMapping(value="demo2")
+    @ResponseBody
+    public String demo2(){
+        return "123"
+;    }
 
     public void translatorDemo() throws ParseException {
         Translator translator = new Translator();
@@ -40,13 +53,10 @@ public class DemoController {
         System.out.println(d);
     }
 
-    public void pyDemo(){
+    public List<String> pyDemo(String footbook,String[] params){
         PythonWorker pythonWorker = new PythonWorker();
-        String param1 = String.valueOf(1);
-        String param2 = String.valueOf(2);
-        String[] params = {param1,param2};
 
-        pythonWorker.activate("demo.py",params);
+        return pythonWorker.activate(footbook,params);
     }
 
     public void txtDemo() throws IOException {
@@ -110,7 +120,11 @@ public class DemoController {
 
     public DemoDto dtoDemo(){
         DemoDto ety = new DemoDto();
-        ety.setMessgae("1");
+        //ety.setInputContent("1");
+        //List<String> files = new LinkedList<>();
+        //files.add("23");
+        //files.add("45");
+        //ety.setUploadList(files);
         return ety;
     }
 

@@ -1,6 +1,8 @@
 export default{
   activeName:"",
   openNames:[],
+  port:'http://localhost:8083',
+  responses:[],
 
   // 当前用户
   currUser: {

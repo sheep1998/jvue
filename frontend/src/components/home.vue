@@ -5,7 +5,7 @@
     </div>
     <div class="form-form">
       <div style="display:flex;flex-wrap:wrap">
-        <div class="demo-upload-list" v-for="(item,index) in uploadList">
+        <div class="demo-upload-list" v-for="(item,index) in files">
           <template>
           <div class="img-p">
             <img src="../assets/txt.png" v-if="item.pic==1">
@@ -22,7 +22,7 @@
         ref="upload"
         :show-upload-list="false"
         :default-file-list="defaultList"
-        :format="['jpg','jpeg','png']"
+        :format="['txt','csv','xlsx']"
         :max-size="3072"
         :on-format-error="handleFormatError"
         :on-exceeded-size="handleMaxSize"
@@ -70,10 +70,38 @@ export default {
       showResult:false
     }
   },
+
   methods:{
     confirm(){
       console.log(this.uploadList)
       console.log(this.inputContent)
+      var files = ""
+      for(var i=0;i<this.uploadList.length;i++){
+        files = files+this.uploadList[i]
+        if(i!=this.uploadList.length-1){
+          files = files+','
+        }
+      }
+      this.$store.state.webSock.send("0@"+this.inputContent+"@"+files)
+
+      /*this.$axios({
+        method: "post",
+        url: this.$store.state.port + "/demo",
+        data:{
+          inputContent:this.inputContent,
+          files:files
+        },
+        transformRequest:function(obj) {
+    　　　var str = [];
+    　　　for ( var p in obj) {
+    　　　　str.push(encodeURIComponent(p) + "="
+    　　　　+ encodeURIComponent(obj[p]));
+  　　　　}
+  　　　　return str.join("&");
+  　　　}
+      }).then((response)=>{
+        console.log(response)
+      })*/
     },
     handleRemove:function(index){
       this.$refs.upload.fileList.splice(index,1)
@@ -104,14 +132,8 @@ export default {
       var name = file.name.split('.')
       var suffix = name[name.length-1]
       if(validList.indexOf(suffix) > -1){
-        var pic = 1
-        if(suffix==='csv'){
-          pic=2
-        }
-        else if(suffix==='xlsx'){
-          pic=3
-        }
-        this.uploadList.push({name:file.name,pic:pic})
+        this.uploadList.push(file.name)
+        console.log(file.name)
         this.$Notice.success({
           desc: file.name + '添加成功'
         });
@@ -125,13 +147,29 @@ export default {
 
       //handleMaxSize和handleFormatError由于返回false所以不被执行
       return false
-    }
+    },
   },
   mounted() {
     this.uploadList = this.$refs.upload.fileList;
   },
   computed:{
-
+    files:function(){
+      var files = []
+      for(var i=0;i<this.uploadList.length;i++){
+        var fname = this.uploadList[i]
+        var name = fname.split('.')
+        var suffix = name[name.length-1]
+        var pic = 1
+        if(suffix==='csv'){
+          pic=2
+        }
+        else if(suffix==='xlsx'){
+          pic=3
+        }
+        files.push({name:fname,pic:pic})
+      }
+      return files
+    }
   }
 }
 </script>

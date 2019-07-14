@@ -29,9 +29,48 @@
 export default {
   name: 'App',
   mounted(){
+    this.initWebSocket()
     this.$store.state.menuitem = this.$store.state.menuitems[0]
   },
   methods:{
+    initWebSocket() {
+      const wsuri = "ws://localhost:8083/myWebSocket/0";
+      this.$store.state.webSock = new WebSocket(wsuri);
+      this.$store.state.webSock.onopen = this.webSocketOnOpen;
+      this.$store.state.webSock.onerror = this.webSocketOnError;
+      this.$store.state.webSock.onmessage = this.webSocketOnMessage;
+      this.$store.state.webSock.onclose = this.webSocketOnClose;
+    },
+
+    webSocketOnOpen() {
+      console.log("连接成功");
+    },
+
+    webSocketOnError() {
+      console.log("连接发生错误");
+    },
+
+    webSocketOnMessage(e) {
+      //const temp = JSON.parse(""+e.data)
+      const temp = e.data
+      if(temp[0]=="0"){
+        var param = temp.split("@")
+        var params = param[1]
+        this.$store.state.responses = params.split(",")
+        console.log(this.$store.state.responses)
+      }
+      else{
+        console.log(temp)
+      }
+    },
+
+    webSocketSend(agentData) {
+      this.$store.state.webSock.send(agentData);
+    },
+
+    webSocketOnClose() {
+      console.log("连接关闭");
+    },
     menuitemSelect(){
 
     }
